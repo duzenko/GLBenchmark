@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GLBench.iOS">
+      <UniqueIdentifier>{cc844cf3-7bb3-40b0-bcec-cda7cd35122f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLBench.iOS\Images.xcassets">
+      <UniqueIdentifier>{09c7c5a9-c8cd-4da1-9c64-b19336ec188e}</UniqueIdentifier>
+      <Extensions>GLBench.iOS\Images.xcassets\*</Extensions>
+    </Filter>
+    <Filter Include="GLBench.iOS\Images.xcassets\AppIcon.appiconset">
+      <UniqueIdentifier>{bdefe768-b24a-47bf-918d-941a6c178eda}</UniqueIdentifier>
+      <Extensions>GLBench.iOS\Images.xcassets\AppIcon.appiconset\*</Extensions>
+    </Filter>
+    <Filter Include="GLBench.iOS\Supporting Files">
+      <UniqueIdentifier>{d4aaa573-67b6-4e93-b2ce-9ad217ee7dcb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GLBench.iOS\AppDelegate.m">
+      <Filter>GLBench.iOS</Filter>
+    </ClCompile>
+    <ClCompile Include="GLBench.iOS\GameViewController.m">
+      <Filter>GLBench.iOS</Filter>
+    </ClCompile>
+    <ClCompile Include="GLBench.iOS\main.m">
+      <Filter>GLBench.iOS\Supporting Files</Filter>
+    </ClCompile>
+    <ClInclude Include="GLBench.iOS\AppDelegate.h">
+      <Filter>GLBench.iOS</Filter>
+    </ClInclude>
+    <ClInclude Include="GLBench.iOS\GameViewController.h">
+      <Filter>GLBench.iOS</Filter>
+    </ClInclude>
+    <Content Include="GLBench.iOS\Base.lproj\Main.storyboard">
+      <Filter>GLBench.iOS</Filter>
+    </Content>
+    <Content Include="GLBench.iOS\Images.xcassets\AppIcon.appiconset\Contents.json">
+      <Filter>GLBench.iOS\Images.xcassets\AppIcon.appiconset</Filter>
+    </Content>
+    <InfoPlist Include="GLBench.iOS\Info.plist">
+      <Filter>GLBench.iOS\Supporting Files</Filter>
+    </InfoPlist>
+  </ItemGroup>
+</Project>
