@@ -8,7 +8,7 @@
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 
-#include "Cube.h"
+#include "shared.h"
 
 using namespace std;
 
@@ -79,6 +79,7 @@ int main( int argc, char* argv[] ) {
 	/* Make the window's context current */
 	glfwMakeContextCurrent( window );
 	gladLoadGLES2Loader( LoadGLProc );
+	glGetError();// :/
 	glfwSwapInterval( 1 );
 
 	for ( auto name : { GL_VENDOR, GL_RENDERER, GL_VERSION } ) {
@@ -86,22 +87,23 @@ int main( int argc, char* argv[] ) {
 		cout << s << '\n';
 	}
 
-	BenchInit();
+	Bench bench;
+	glClearColor( 0, .5, 0, 0 );
 
 	/* Loop until the user closes the window */
 	while ( !glfwWindowShouldClose( window ) )
 	{
-		/* Render here */
-		glClearColor( 0, .5, 0, 0 );
-		glClear( GL_COLOR_BUFFER_BIT );
-
-		BenchFrame();
+		GL::Check();
+		bench.Frame();
+		GL::Check();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers( window );
+		GL::Check();
 
 		/* Poll for and process events */
 		glfwPollEvents();
+		GL::Check();
 	}
 
 	glfwTerminate(); 

@@ -1,6 +1,6 @@
 #include <cstdlib>
 #include <cstdarg>
-#include "Cube.h"
+#include "shared.h"
 
 void esLogMessage( const char* formatStr, ... )
 {
@@ -69,24 +69,7 @@ GLuint LoadShader( GLenum type, const char* shaderSrc )
 
 }
 
-char vShaderStr[] =
-"#version 300 es                          \n"
-"layout(location = 0) in vec4 vPosition;  \n"
-"void main()                              \n"
-"{                                        \n"
-"   gl_Position = vPosition;              \n"
-"}                                        \n";
-
-char fShaderStr[] =
-"#version 300 es                              \n"
-"precision mediump float;                     \n"
-"out vec4 fragColor;                          \n"
-"void main()                                  \n"
-"{                                            \n"
-"   fragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );  \n"
-"}                                            \n";
-
-bool BenchInit() {
+Bench::Bench() {
 	//UserData* userData = esContext->userData;
 	char vShaderStr[] =
 		"#version 300 es                          \n"
@@ -119,7 +102,7 @@ bool BenchInit() {
 
 	if ( programObject == 0 )
 	{
-		return 0;
+		return;
 	}
 
 	glAttachShader( programObject, vertexShader );
@@ -148,26 +131,25 @@ bool BenchInit() {
 		}
 
 		glDeleteProgram( programObject );
-		return false;
+		return;
 	}
 
 	// Store the program object
 	userData.programObject = programObject;
 
-	glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );
-	return true;
+	GL::Check();
 }
 
-void BenchFrame() {
+void Bench::Frame() {
 	GLfloat vVertices[] = { 0.0f,  0.5f, 0.0f,
 							 -0.5f, -0.5f, 0.0f,
 							 0.5f, -0.5f, 0.0f
 	};
 
-	// Set the viewport
-	//glViewport( 0, 0, esContext->width, esContext->height );
-
 	// Clear the color buffer
+	GL::Check();
+	frameBuffer.Bind();
+	GL::Check();
 	glClear( GL_COLOR_BUFFER_BIT );
 
 	// Use the program object
@@ -178,4 +160,8 @@ void BenchFrame() {
 	glEnableVertexAttribArray( 0 );
 
 	glDrawArrays( GL_TRIANGLES, 0, 3 );
+
+	GL::Check();
+	frameBuffer.Blit();
+	GL::Check();
 }
