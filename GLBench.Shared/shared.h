@@ -23,6 +23,7 @@ struct GL {
 #include "Framebuffer.h"
 
 struct Bench {
+	static double time;
 	Bench();
 	void Frame();
 private:

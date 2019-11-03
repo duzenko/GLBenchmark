@@ -5,7 +5,11 @@
 #include "shared.h"
 
 struct Framebuffer {
+	GLsizei maxSize;
+
 	Framebuffer() {
+		glGetIntegerv( GL_MAX_RENDERBUFFER_SIZE, &maxSize );
+		std::cout << "Max FBO size: " << maxSize << '\n';
 		GL::Check();
 		glGenFramebuffers( 1, &name );
 		glBindFramebuffer( GL_FRAMEBUFFER, name );
@@ -14,7 +18,7 @@ struct Framebuffer {
 		GL::Check();
 		glBindRenderbuffer( GL_RENDERBUFFER, rBuff );
 		GL::Check();
-		glRenderbufferStorage( GL_RENDERBUFFER, GL_RGBA8, 64, 64 );
+		glRenderbufferStorage( GL_RENDERBUFFER, GL_RGBA8, maxSize, maxSize );
 		GL::Check();
 		glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rBuff );
 		GL::Check();
@@ -26,11 +30,11 @@ struct Framebuffer {
 	}
 	void Bind() {
 		glBindFramebuffer( GL_FRAMEBUFFER, name );
-		glViewport( 0, 0, 64, 64 );
+		glViewport( 0, 0, maxSize, maxSize );
 	}
 	void Blit() {
 		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 );
-		glBlitFramebuffer(0, 0, 63, 63, 0, 0, 511, 511, GL_COLOR_BUFFER_BIT, GL_NEAREST );
+		glBlitFramebuffer(0, 0, maxSize-1, maxSize-1, 0, 0, 511, 511, GL_COLOR_BUFFER_BIT, GL_NEAREST );
 	}
 private:
 	GLuint name;

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <sstream>
 #include <windows.h>
 #define GLFW_INCLUDE_NONE
 #include "glad/glad.h"
@@ -53,6 +54,27 @@ void* LoadGLProc( const char* name ) {
 	return p;
 }
 
+void showFPS( GLFWwindow* pWindow )
+{
+	static int nbFrames = 0;
+	static double lastTime = glfwGetTime();
+	// Measure speed
+	double currentTime = glfwGetTime();
+	double delta = (Bench::time = currentTime) - lastTime;
+	nbFrames++;
+	if ( delta >= 1.0 ) { // If last cout was more than 1 sec ago
+		double fps = double( nbFrames ) / delta;
+
+		std::stringstream ss;
+		ss << "GLBench" << " [" << (int)fps << " FPS]";
+
+		glfwSetWindowTitle( pWindow, ss.str().c_str() );
+
+		nbFrames = 0;
+		lastTime = currentTime;
+	}
+}
+
 int main( int argc, char* argv[] ) {
 
 	/* Initialize the library */
@@ -80,7 +102,7 @@ int main( int argc, char* argv[] ) {
 	glfwMakeContextCurrent( window );
 	gladLoadGLES2Loader( LoadGLProc );
 	glGetError();// :/
-	glfwSwapInterval( 1 );
+	//glfwSwapInterval( 1 );
 
 	for ( auto name : { GL_VENDOR, GL_RENDERER, GL_VERSION } ) {
 		const GLubyte* s = glGetString( name);
@@ -91,19 +113,19 @@ int main( int argc, char* argv[] ) {
 	glClearColor( 0, .5, 0, 0 );
 
 	/* Loop until the user closes the window */
-	while ( !glfwWindowShouldClose( window ) )
-	{
+	while ( !glfwWindowShouldClose( window ) ) {
+		/* Poll for and process events */
+		glfwPollEvents();
+
 		GL::Check();
 		bench.Frame();
 		GL::Check();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers( window );
-		GL::Check();
+		glGetError();
 
-		/* Poll for and process events */
-		glfwPollEvents();
-		GL::Check();
+		showFPS( window );
 	}
 
 	glfwTerminate(); 

@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cstdarg>
+#include <iostream>
 #include "shared.h"
 
 void esLogMessage( const char* formatStr, ... )
@@ -141,27 +142,32 @@ Bench::Bench() {
 }
 
 void Bench::Frame() {
-	GLfloat vVertices[] = { 0.0f,  0.5f, 0.0f,
-							 -0.5f, -0.5f, 0.0f,
-							 0.5f, -0.5f, 0.0f
+	GLfloat vVertices[] = { 
+		-1, -1, 
+		+1, -1,
+		-1, +1,
+		+1, +1,
 	};
 
 	// Clear the color buffer
 	GL::Check();
 	frameBuffer.Bind();
 	GL::Check();
+	glClearColor( 0, .5+.2*sin(Bench::time), 0, 0 );
 	glClear( GL_COLOR_BUFFER_BIT );
 
 	// Use the program object
 	glUseProgram( userData.programObject );
 
 	// Load the vertex data
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, vVertices );
+	glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, vVertices );
 	glEnableVertexAttribArray( 0 );
 
-	glDrawArrays( GL_TRIANGLES, 0, 3 );
+	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
 
 	GL::Check();
 	frameBuffer.Blit();
 	GL::Check();
 }
+
+double Bench::time = 0;
