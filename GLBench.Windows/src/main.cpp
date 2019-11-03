@@ -41,10 +41,15 @@ int main( int argc, char* argv[] ) {
 	if ( !glfwInit() )
 		return -1;
 
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 2 );
+	glfwWindowHint( GLFW_CLIENT_API, GLFW_OPENGL_ES_API );
+
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow( 640, 480, "Hello World", NULL, NULL );
 	if ( !window )
 	{
+		cout << "Failed to create a GLFW window\n";
 		glfwTerminate();
 		return -1;
 	}
@@ -57,15 +62,16 @@ int main( int argc, char* argv[] ) {
 	glfwMakeContextCurrent( window );
 	glfwSwapInterval( 1 );
 
-	const GLubyte* vendor = glGetString( GL_VENDOR ); // Returns the vendor
-	const GLubyte* renderer = glGetString( GL_RENDERER ); // Returns a hint to the model
-	
-	cout << vendor << '\n' << renderer;
+	for ( auto name : { GL_VENDOR, GL_RENDERER, GL_VERSION } ) {
+		const GLubyte* s = glGetString( name);
+		cout << s << '\n';
+	}
 
 	/* Loop until the user closes the window */
 	while ( !glfwWindowShouldClose( window ) )
 	{
 		/* Render here */
+		glClearColor( 0, .5, 0, 0 );
 		glClear( GL_COLOR_BUFFER_BIT );
 
 		/* Swap front and back buffers */
