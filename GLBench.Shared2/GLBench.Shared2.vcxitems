@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{c97e3c73-85f8-4efa-b5c0-35849acf0d9f}</ItemsProjectGuid>
+    <ItemsProjectGuid>{da3fbd97-59fa-43f8-9938-2e64299b3a50}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -14,9 +14,9 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Cube.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)qwe.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Cube.cpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)qwe.h" />
   </ItemGroup>
 </Project>

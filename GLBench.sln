@@ -22,6 +22,7 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		GLBench.Shared\GLBench.Shared.vcxitems*{264f8d7c-7aa8-4962-97db-c832ff6af0dc}*SharedItemsImports = 4
+		GLBench.Shared\GLBench.Shared.vcxitems*{37ba05e6-2930-4165-92bf-ae49c438efc5}*SharedItemsImports = 4
 		GLBench.Shared\GLBench.Shared.vcxitems*{c97e3c73-85f8-4efa-b5c0-35849acf0d9f}*SharedItemsImports = 9
 		GLBench.Shared\GLBench.Shared.vcxitems*{fd90bddf-4479-4a14-beab-e5165f705f91}*SharedItemsImports = 4
 	EndGlobalSection
