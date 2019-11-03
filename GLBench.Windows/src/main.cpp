@@ -14,6 +14,7 @@
 using namespace std;
 
 GLFWwindow* window;
+Bench bench;
 
 /*void show( HWND hwnd )
 {
@@ -37,8 +38,18 @@ GLFWwindow* window;
 
 void key_callback( GLFWwindow* window, int key, int scancode, int action, int mods )
 {
-	if ( key == GLFW_KEY_ESCAPE && action == GLFW_PRESS )
+	if ( action != GLFW_PRESS )
+		return;
+	if ( key == GLFW_KEY_ESCAPE )
 		glfwSetWindowShouldClose( window, true );
+	if ( key == GLFW_KEY_F2 ) {
+		bench.passes--;
+		std::cout << "Passes changed to " << bench.passes << '\n';
+	}
+	if ( key == GLFW_KEY_F3 ) {
+		bench.passes++;
+		std::cout << "Passes changed to " << bench.passes << '\n';
+	}
 }
 
 void* LoadGLProc( const char* name ) {
@@ -60,7 +71,7 @@ void showFPS( GLFWwindow* pWindow )
 	static double lastTime = glfwGetTime();
 	// Measure speed
 	double currentTime = glfwGetTime();
-	double delta = (Bench::time = currentTime) - lastTime;
+	double delta = (bench.time = currentTime) - lastTime;
 	nbFrames++;
 	if ( delta >= 1.0 ) { // If last cout was more than 1 sec ago
 		double fps = double( nbFrames ) / delta;
@@ -102,15 +113,14 @@ int main( int argc, char* argv[] ) {
 	glfwMakeContextCurrent( window );
 	gladLoadGLES2Loader( LoadGLProc );
 	glGetError();// :/
-	//glfwSwapInterval( 1 );
+	glfwSwapInterval( 0 );
 
 	for ( auto name : { GL_VENDOR, GL_RENDERER, GL_VERSION } ) {
 		const GLubyte* s = glGetString( name);
 		cout << s << '\n';
 	}
 
-	Bench bench;
-	glClearColor( 0, .5, 0, 0 );
+	bench.Init();
 
 	/* Loop until the user closes the window */
 	while ( !glfwWindowShouldClose( window ) ) {
@@ -131,3 +141,5 @@ int main( int argc, char* argv[] ) {
 	glfwTerminate(); 
 	return 0;
 }
+
+extern "C" {   _declspec( dllexport ) DWORD NvOptimusEnablement = 0x00000001; }

@@ -1,3 +1,9 @@
 .vs/
 Debug/
 GLBench.Windows/glfw-3.3.bin.WIN32/
+GLBench.Android.NativeActivity/x86/
+GLBench.Android.Packaging/x86/
+GLBench.iOS.Application/x86/
+GLBench.iOS.StaticLibrary/x86/
+GLBench.Windows/Release/
+Release/

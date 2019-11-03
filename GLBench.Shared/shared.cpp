@@ -3,6 +3,8 @@
 #include <iostream>
 #include "shared.h"
 
+#define NameOf(x) #x
+
 void esLogMessage( const char* formatStr, ... )
 {
 	va_list params;
@@ -24,7 +26,7 @@ struct {
 	GLuint programObject;
 } userData;
 
-GLuint LoadShader( GLenum type, const char* shaderSrc )
+GLuint LoadShader( GLenum type, const char* shaderSrc, const char* typeName )
 {
 	GLuint shader;
 	GLint compiled;
@@ -57,7 +59,7 @@ GLuint LoadShader( GLenum type, const char* shaderSrc )
 			char* infoLog = (char*)malloc( sizeof( char ) * infoLen );
 
 			glGetShaderInfoLog( shader, infoLen, NULL, infoLog );
-			esLogMessage( "Error compiling shader:\n%s\n", infoLog );
+			esLogMessage( "Error compiling %s:\n%s\n", typeName, infoLog );
 
 			free( infoLog );
 		}
@@ -70,24 +72,29 @@ GLuint LoadShader( GLenum type, const char* shaderSrc )
 
 }
 
-Bench::Bench() {
+bool Bench::Init() {
 	//UserData* userData = esContext->userData;
-	char vShaderStr[] =
-		"#version 300 es                          \n"
-		"layout(location = 0) in vec4 vPosition;  \n"
-		"void main()                              \n"
-		"{                                        \n"
-		"   gl_Position = vPosition;              \n"
-		"}                                        \n";
+	char vShaderStr[] = "#version 320 es\n			\
+layout(location = 0) in vec4 vPosition;				\
+layout(location = 0) uniform float colorShift;		\
+out vec3 color;										\
+void main()											\
+{													\
+	vec3 x = vec3(0,1,3) + colorShift + float(gl_VertexID);							\
+	color = sin(x) * .5 + .5;						\
+	gl_Position = vPosition;						\
+}													\
+";
 
-	char fShaderStr[] =
-		"#version 300 es                              \n"
-		"precision mediump float;                     \n"
-		"out vec4 fragColor;                          \n"
-		"void main()                                  \n"
-		"{                                            \n"
-		"   fragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );  \n"
-		"}                                            \n";
+	char fShaderStr[] = "#version 320 es\n			\
+precision mediump float;							\
+in vec3 color;										\
+out vec4 fragColor;									\
+void main()											\
+{													\
+   fragColor.rgb = color;							\
+}													\
+";
 
 	GLuint vertexShader;
 	GLuint fragmentShader;
@@ -95,15 +102,15 @@ Bench::Bench() {
 	GLint linked;
 
 	// Load the vertex/fragment shaders
-	vertexShader = LoadShader( GL_VERTEX_SHADER, vShaderStr );
-	fragmentShader = LoadShader( GL_FRAGMENT_SHADER, fShaderStr );
+	vertexShader = LoadShader( GL_VERTEX_SHADER, vShaderStr, NameOf( GL_VERTEX_SHADER ) );
+	fragmentShader = LoadShader( GL_FRAGMENT_SHADER, fShaderStr, NameOf( GL_FRAGMENT_SHADER ) );
 
 	// Create the program object
 	programObject = glCreateProgram();
 
 	if ( programObject == 0 )
 	{
-		return;
+		return false;
 	}
 
 	glAttachShader( programObject, vertexShader );
@@ -132,17 +139,22 @@ Bench::Bench() {
 		}
 
 		glDeleteProgram( programObject );
-		return;
+		return false;
 	}
 
 	// Store the program object
 	userData.programObject = programObject;
+	frameBuffer.Init();
 
 	GL::Check();
+	return true;
 }
 
 void Bench::Frame() {
-	GLfloat vVertices[] = { 
+	if ( !userData.programObject || !frameBuffer.ok )
+		return;
+
+	GLfloat vVertices[] = {
 		-1, -1, 
 		+1, -1,
 		-1, +1,
@@ -153,8 +165,6 @@ void Bench::Frame() {
 	GL::Check();
 	frameBuffer.Bind();
 	GL::Check();
-	glClearColor( 0, .5+.2*sin(Bench::time), 0, 0 );
-	glClear( GL_COLOR_BUFFER_BIT );
 
 	// Use the program object
 	glUseProgram( userData.programObject );
@@ -163,11 +173,12 @@ void Bench::Frame() {
 	glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, vVertices );
 	glEnableVertexAttribArray( 0 );
 
-	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+	for ( int i = 0; i < passes; i++ ) {
+		glUniform1f( 0, (float)Bench::time + i );
+		glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+	}
 
 	GL::Check();
 	frameBuffer.Blit();
 	GL::Check();
 }
-
-double Bench::time = 0;
